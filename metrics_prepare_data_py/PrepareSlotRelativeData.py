@@ -1,7 +1,7 @@
 import os
 import re
 newslotid = 19
-multiple = 100000
+multiple = 10000
 spath = 'metrics_prepare_data_py/InputFiles/'
 tpath = 'metrics_prepare_data_py/OutputFiles/'
 basejobhistoryfilename = 'Prepare_slot1_add_histroy_jobs.sql'
@@ -25,7 +25,7 @@ def refactormetricrecord(matched):
 path = os.listdir(spath)
 for file in path:
     if(file == basejobhistoryfilename):
-        pattern = 'VALUES \(N\'(?P<jobid>\d\d\d\d)\''
+        pattern = 'VALUES \(N\'(?P<jobid>\d+)\''
         inputfile = spath + file
         print('Conversion is ongoing for: ' + inputfile)
         with open(inputfile, 'r') as inputfile:
@@ -39,7 +39,7 @@ for file in path:
         print('Conversion finished for: ' + destinationpath)
 
     if(file == basemetrichistoryfilename):
-        pattern = 'VALUES\( N\'(?P<metricid>\d\d\d\d\d)\', N\'(?P<jobid>\d\d\d\d)\''
+        pattern = 'VALUES\( N\'(?P<metricid>\d+)\', N\'(?P<jobid>\d+)\''
         inputfile = spath + file
         print('Conversion is ongoing for: ' + inputfile)
         with open(inputfile, 'r') as inputfile:

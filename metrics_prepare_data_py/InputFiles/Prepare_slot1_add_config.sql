@@ -1,5 +1,5 @@
 SET IDENTITY_INSERT [dbo].[ConfigInfoes] ON
-INSERT INTO [dbo].[ConfigInfoes] ([Id], [ConfigName], [SlotId], [ConfigPayload], [Desc], [Owner], [IsActive], [SubmitIntervalHours], [CreateDtm], [ModifiedDtm], [InterfaceConfigPayload], [JobType]) VALUES (1, N'case1.json', 1, N'{
+INSERT INTO [dbo].[ConfigInfoes] ([Id], [ConfigName], [SlotId], [ConfigPayload], [Desc], [Owner], [IsActive], [SubmitIntervalHours], [CreateDtm], [ModifiedDtm], [InterfaceConfigPayload], [JobType]) VALUES (1, N'Case1.json', 1, N'{
     "ExperimentInfo": {
         "OverrideDate": null,
         "RunAsAccountName": null,
@@ -31,7 +31,7 @@ INSERT INTO [dbo].[ConfigInfoes] ([Id], [ConfigName], [SlotId], [ConfigPayload],
 			{
                 "Tag": "Fake Data Version",
                 "Parameter": "CaseVersion",
-                "ValueTemplate": "\"case1\""
+                "ValueTemplate": "\"Case1\""
             }
         ]
     },
@@ -142,7 +142,7 @@ INSERT INTO [dbo].[ConfigInfoes] ([Id], [ConfigName], [SlotId], [ConfigPayload],
     },
     "TrainingParam": null,
     "ValidationParam": null
-}', N'case1.json', N'fareast\wenchen', 1, 1440, N'2018-01-02 03:21:56', N'2018-01-02 03:21:56', NULL, 1)
+}', N'Case1.json', N'fareast\wenchen', 1, 1440, N'2018-01-02 03:21:56', N'2018-01-02 03:21:56', NULL, 1)
 SET IDENTITY_INSERT [dbo].[ConfigInfoes] OFF
 
 GO

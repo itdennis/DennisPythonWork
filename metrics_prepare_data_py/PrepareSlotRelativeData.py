@@ -1,6 +1,6 @@
 import os
 import re
-newslotid = 2
+newslotid = 10
 multiple = 10000
 spath = 'metrics_prepare_data_py/InputFiles/'
 tpath = 'metrics_prepare_data_py/OutputFiles/'
@@ -61,7 +61,7 @@ for file in path:
         print('Conversion finished for: ' + destinationpath)
 
     if(file == baseslotconfigfilename):
-        pattern = '(?P<caseid>1), N\'case1.json\', (?P<caseslotid>1)'
+        pattern = '(?P<caseid>1), N\'Case1.json\', (?P<caseslotid>1)'
         #pattern4case = 'case(?P<caseid>1)'
         inputfile = spath + file
         print('Conversion is ongoing for: ' + inputfile)
@@ -70,7 +70,7 @@ for file in path:
         filedata = re.sub(pattern, refactorconfigrecord, filedata)
         #filedata = re.sub(pattern4case, refactorconfigrecord, filedata)
         filedata = filedata.replace(baseowner, newowner)
-        filedata = filedata.replace('case1', 'case'+str(newslotid))
+        filedata = filedata.replace('Case1', 'Case'+str(newslotid))
         destinationpath = tpath + 'Prepare_slot' + str(newslotid) + '_add_config.sql'
         with open(destinationpath, 'w') as file:
             file.write(filedata)

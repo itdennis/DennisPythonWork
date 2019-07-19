@@ -1,13 +1,16 @@
 import os
 import re
-newslotid = 19
+newslotid = 2
 multiple = 10000
 spath = 'metrics_prepare_data_py/InputFiles/'
 tpath = 'metrics_prepare_data_py/OutputFiles/'
 basejobhistoryfilename = 'Prepare_slot1_add_histroy_jobs.sql'
 basemetrichistoryfilename = 'Prepare_slot1_add_histroy_metrics.sql'
+baseslotconfigfilename = 'Prepare_slot1_add_config.sql'
 sourceslotid = 'N\'1\''
 targetslotid = 'N\'' + str(newslotid) + '\''
+baseowner = 'wenchen'
+newowner = 'v-yanywu'
 
 # 将匹配的数字乘以 slotId * multiple
 def refactorjobrecord(matched):
@@ -21,6 +24,11 @@ def refactormetricrecord(matched):
     newmetricid = str(metricid + newslotid * multiple)
     newjobid = str(jobid + newslotid * multiple)
     return 'VALUES( N\'' + newmetricid +'\', N\'' + newjobid + '\''
+
+def refactorconfigrecord(matched):
+    caseid = int(matched.group('caseid'))
+    newcaseid = newcaseslotid = str(newslotid)
+    return newcaseid + ', N\'case' + newcaseid + '.json\', ' + newcaseslotid
 
 path = os.listdir(spath)
 for file in path:
@@ -50,4 +58,20 @@ for file in path:
         destinationpath = tpath + 'Prepare_slot' + str(newslotid) + '_add_histroy_metrics.sql'
         with open(destinationpath, 'w') as file:
             file.write(filedata)
-        print('Conversion finished for: ' + destinationpath)    
+        print('Conversion finished for: ' + destinationpath)
+
+    if(file == baseslotconfigfilename):
+        pattern = '(?P<caseid>1), N\'case1.json\', (?P<caseslotid>1)'
+        #pattern4case = 'case(?P<caseid>1)'
+        inputfile = spath + file
+        print('Conversion is ongoing for: ' + inputfile)
+        with open(inputfile, 'r') as inputfile:
+            filedata = inputfile.read()
+        filedata = re.sub(pattern, refactorconfigrecord, filedata)
+        #filedata = re.sub(pattern4case, refactorconfigrecord, filedata)
+        filedata = filedata.replace(baseowner, newowner)
+        filedata = filedata.replace('case1', 'case'+str(newslotid))
+        destinationpath = tpath + 'Prepare_slot' + str(newslotid) + '_add_config.sql'
+        with open(destinationpath, 'w') as file:
+            file.write(filedata)
+        print('Conversion finished for: ' + destinationpath)

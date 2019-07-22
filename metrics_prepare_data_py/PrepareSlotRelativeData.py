@@ -8,10 +8,10 @@ tpath = 'metrics_prepare_data_py/OutputFiles/'
 basejobhistoryfilename = 'Prepare_slot1_add_histroy_jobs.sql'
 basemetrichistoryfilename = 'Prepare_slot1_add_histroy_metrics.sql'
 baseslotconfigfilename = 'Prepare_slot1_add_config.sql'
-sourceslotid = 'N\'1\''
+sourceslotid = 'N\'2\', N\'1\''
 #targetslotid = 'N\'' + str(newslotid) + '\''
 baseowner = 'wenchen'
-newowner = 'v-yanywu'
+newowner = 'waspnotification'
 
 # 将匹配的数字乘以 slotId * multiple
 def refactorjobrecord(matched):
@@ -33,7 +33,7 @@ def refactorconfigrecord(matched):
 
 path = os.listdir(spath)
 for newslotid in newslotidlist:
-    targetslotid = 'N\'' + str(newslotid) + '\''
+    targetslotid = 'N\'2\', N\'' + str(newslotid) + '\''
     for file in path:
         if(file == basejobhistoryfilename):
             pattern = 'VALUES \(N\'(?P<jobid>\d+)\''
@@ -57,7 +57,7 @@ for newslotid in newslotidlist:
                 filedata = inputfile.read()
             filedata = re.sub(pattern, refactormetricrecord, filedata)
             # replace old slot id to new slot id
-            filedata = filedata.replace(sourceslotid, targetslotid)
+            # filedata = filedata.replace(sourceslotid, targetslotid)
             destinationpath = tpath + 'Prepare_slot' + str(newslotid) + '_add_histroy_metrics.sql'
             with open(destinationpath, 'w') as file:
                 file.write(filedata)

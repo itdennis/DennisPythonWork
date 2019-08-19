@@ -1,12 +1,30 @@
 import os
 import re
-newslotidlist = [302,303,304]
+#newslotid = 10
+newslotidlist = [307,306,305]
+multiple = 100
 spath = 'metrics_prepare_data_py/InputFiles/'
 tpath = 'metrics_prepare_data_py/OutputFiles/'
+basejobhistoryfilename = 'Prepare_slot1_add_histroy_jobs.sql'
+basemetrichistoryfilename = 'Prepare_slot1_add_histroy_metrics.sql'
 baseslotconfigfilename = 'Prepare_slot1_add_config.sql'
 sourceslotid = 'N\'2\', N\'1\''
+#targetslotid = 'N\'' + str(newslotid) + '\''
 baseowner = 'wenchen'
 newowner = 'waspnotification'
+
+# 将匹配的数字乘以 slotId * multiple
+def refactorjobrecord(matched):
+    jobid = int(matched.group('jobid'))
+    newjobid = str(jobid + newslotid * multiple - 100)
+    return 'VALUES( N\'' + newjobid + '\''
+
+def refactormetricrecord(matched):
+    metricid = int(matched.group('metricid'))
+    jobid = int(matched.group('jobid'))
+    newmetricid = str(metricid + newslotid * 1000 - 1000)
+    newjobid = str(jobid + newslotid * 100 - 100)
+    return 'VALUES( N\'' + newmetricid +'\', N\'' + newjobid + '\''
 
 def refactorconfigrecord(matched):
     caseid = int(matched.group('caseid'))
@@ -17,17 +35,46 @@ path = os.listdir(spath)
 for newslotid in newslotidlist:
     targetslotid = 'N\'2\', N\'' + str(newslotid) + '\''
     for file in path:
+        if(file == basejobhistoryfilename):
+            pattern = 'VALUES \(N\'(?P<jobid>\d+)\''
+            inputfile = spath + file
+            print('Conversion is ongoing for: ' + inputfile)
+            with open(inputfile, 'r') as inputfile:
+                filedata = inputfile.read()
+            filedata = re.sub(pattern, refactorjobrecord, filedata)
+            # replace old slot id to new slot id
+            filedata = filedata.replace(sourceslotid, targetslotid)
+            destinationpath = tpath + 'Prepare_slot' + str(newslotid) + '_add_histroy_jobs.sql'
+            with open(destinationpath, 'w') as file:
+                file.write(filedata)
+            print('Conversion finished for: ' + destinationpath)
+
+        if(file == basemetrichistoryfilename):
+            pattern = 'VALUES\(N\'(?P<metricid>\d+)\',N\'(?P<jobid>\d+)\''
+            inputfile = spath + file
+            print('Conversion is ongoing for: ' + inputfile)
+            with open(inputfile, 'r') as inputfile:
+                filedata = inputfile.read()
+            filedata = re.sub(pattern, refactormetricrecord, filedata)
+            # replace old slot id to new slot id
+            # filedata = filedata.replace(sourceslotid, targetslotid)
+            destinationpath = tpath + 'Prepare_slot' + str(newslotid) + '_add_histroy_metrics.sql'
+            with open(destinationpath, 'w') as file:
+                file.write(filedata)
+            print('Conversion finished for: ' + destinationpath)
+
         if(file == baseslotconfigfilename):
-            pattern = '(?P<caseid>1), N\'Case1.json\', (?P<caseslotid>1)'
+            pattern = '(?P<caseid>1), N\'case1.json\', (?P<caseslotid>1)'
             inputfile = spath + file
             print('Conversion is ongoing for: ' + inputfile)
             with open(inputfile, 'r') as inputfile:
                 filedata = inputfile.read()
             filedata = re.sub(pattern, refactorconfigrecord, filedata)
             filedata = filedata.replace(baseowner, newowner)
-            filedata = filedata.replace('Case1', 'Case'+str(newslotid))
+            filedata = filedata.replace('case1', 'case'+str(newslotid))
             filedata = filedata.replace('"PrimarySlotId": 1,', '"PrimarySlotId": ' + str(newslotid) + ',')
             filedata = filedata.replace('"SlotId": 1,', '"SlotId": ' + str(newslotid) + ',')
+            filedata = filedata.replace('Slot1', 'Slot' + str(newslotid))
             destinationpath = tpath + 'Prepare_slot' + str(newslotid) + '_add_config.sql'
             with open(destinationpath, 'w') as file:
                 file.write(filedata)

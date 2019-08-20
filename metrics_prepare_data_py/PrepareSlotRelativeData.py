@@ -1,14 +1,14 @@
 import os
 import re
 #newslotid = 10
-newslotidlist = [307,306,305]
+newslotidlist = [308, 307, 306, 305]
 multiple = 100
 spath = 'metrics_prepare_data_py/InputFiles/'
 tpath = 'metrics_prepare_data_py/OutputFiles/'
 basejobhistoryfilename = 'Prepare_slot1_add_histroy_jobs.sql'
 basemetrichistoryfilename = 'Prepare_slot1_add_histroy_metrics.sql'
 baseslotconfigfilename = 'Prepare_slot1_add_config.sql'
-sourceslotid = 'N\'2\', N\'1\''
+sourceslotid = 'N\'2\',N\'1\''
 #targetslotid = 'N\'' + str(newslotid) + '\''
 baseowner = 'wenchen'
 newowner = 'waspnotification'
@@ -33,7 +33,7 @@ def refactorconfigrecord(matched):
 
 path = os.listdir(spath)
 for newslotid in newslotidlist:
-    targetslotid = 'N\'2\', N\'' + str(newslotid) + '\''
+    targetslotid = 'N\'2\',N\'' + str(newslotid) + '\''
     for file in path:
         if(file == basejobhistoryfilename):
             pattern = 'VALUES \(N\'(?P<jobid>\d+)\''
